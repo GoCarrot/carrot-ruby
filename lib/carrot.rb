@@ -16,6 +16,7 @@ require 'base64'
 require 'digest'
 require 'json'
 require 'net/http'
+require 'cgi'
 
 class Carrot
   attr_accessor :app_id, :app_secret, :uuid, :hostname
@@ -31,7 +32,7 @@ class Carrot
     @uuid = uuid
     http = Net::HTTP.new @hostname, 443
     http.use_ssl = true
-    request = Net::HTTP::Get.new "/games/#{@app_id}/users/#{@uuid}.json"
+    request = Net::HTTP::Get.new "/games/#{@app_id}/users.json?id=#{CGI::escape(uuid.to_s)}"
     response = http.request(request)
     case response
     when Net::HTTPSuccess       # User has fully-authorized app
