@@ -20,7 +20,7 @@ require 'net/http'
 class Carrot
   attr_accessor :app_id, :app_secret, :uuid, :hostname
 
-  def initialize(app_id, app_secret, uuid = nil, hostname = 'gocarrot.herokuapp.com')
+  def initialize(app_id, app_secret, uuid = nil, hostname = 'gocarrot.com')
     @app_id = app_id
     @app_secret = app_secret
     @uuid = uuid
