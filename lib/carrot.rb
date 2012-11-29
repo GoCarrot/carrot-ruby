@@ -55,11 +55,11 @@ class Carrot
     request.set_form_data({'access_token' => access_token, 'api_key' => @uuid})
     response = http.request(request)
     case response
-    when Net::HTTPSuccess       # User created
+    when Net::HTTPSuccess           # User created
       return :authorized
-    when Net::HTTPUnauthorized  # Read-only permissions
+    when Net::HTTPUnauthorized      # Read-only permissions
       return :read_only
-    when Net::HTTPClientError   # User has not authorized app
+    when Net::HTTPMethodNotAllowed  # User has not authorized app
       return :not_authorized
     else
       puts response.body
@@ -87,11 +87,13 @@ class Carrot
     request.set_form_data(payload)
     response = http.request(request)
     case response
-    when Net::HTTPSuccess       # User created
+    when Net::HTTPSuccess           # User created
       return :authorized
-    when Net::HTTPUnauthorized  # Read-only permissions
+    when Net::HTTPUnauthorized      # Read-only permissions
       return :read_only
-    when Net::HTTPClientError   # User has not authorized app
+    when Net::HTTPNotFound          # Resource not found
+      return :not_found
+    when Net::HTTPMethodNotAllowed  # User has not authorized app
       return :not_authorized
     else
       puts response.body
