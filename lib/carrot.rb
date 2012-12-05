@@ -128,6 +128,21 @@ class Carrot
     return post_signed_request("/me/actions.json", payload)
   end
 
+  # Post a 'Like' to the Carrot service.
+  #
+  # @param object_type [Symbol] one of: `:game`, `:publisher`, `:achievement`, or `:object`.
+  # @param object_id [String]   if `:achievement` or `:object` is specified as `object_type` this is the identifier of the achievement or object.
+  # @param udid [String] a per-user unique identifier or `nil` to use the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
+  #
+  # @return [Symbol] one of: `:success`, `:read_only`, `:not_found`, `:not_authorized` or `:unknown`
+  def post_like(object_type, object_id = nil, uuid = @uuid)
+    payload = {
+      'api_key' => uuid,
+      'object' => "#{object_type}#{":#{object_id}" if object_id}"
+    }
+    return post_signed_request("/me/like.json", payload)
+  end
+
   private
 
   def post_signed_request(endpoint, payload, uuid = @uuid)
