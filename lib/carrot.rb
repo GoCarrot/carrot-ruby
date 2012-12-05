@@ -91,7 +91,7 @@ class Carrot
   #
   # @return [Symbol] one of: `:success`, `:read_only`, `:not_found`, `:not_authorized` or `:unknown`
   def post_achievement(achievement_id, uuid = @uuid)
-    return post_signed_request("/me/achievements.json", {'achievement_id' => achievement_id})
+    return post_signed_request("/me/achievements.json", {'api_key' => uuid, 'achievement_id' => achievement_id})
   end
 
   # Post a high score to the Carrot service.
@@ -102,7 +102,7 @@ class Carrot
   #
   # @return [Symbol] one of: `:success`, `:read_only`, `:not_found`, `:not_authorized` or `:unknown`
   def post_highscore(score, leaderboard_id = "", uuid = @uuid)
-    return post_signed_request("/me/scores.json", {'value' => score, 'leaderboard_id' => leaderboard_id})
+    return post_signed_request("/me/scores.json", {'api_key' => uuid, 'value' => score, 'leaderboard_id' => leaderboard_id})
   end
 
   # Post an Open Graph action to the Carrot service.
@@ -119,9 +119,10 @@ class Carrot
   # @return [Symbol] one of: `:success`, `:read_only`, `:not_found`, `:not_authorized` or `:unknown`
   def post_action(action_id, object_instance_id, action_properties = {}, object_properties = {}, uuid = @uuid)
     payload = {
-       'action_id' => action_id,
-       'action_properties' => JSON.generate(action_properties || {}),
-       'object_properties' => JSON.generate(object_properties || {})
+      'api_key' => uuid,
+      'action_id' => action_id,
+      'action_properties' => JSON.generate(action_properties || {}),
+      'object_properties' => JSON.generate(object_properties || {})
     }
     payload.update({'object_instance_id' => object_instance_id}) if object_instance_id
     return post_signed_request("/me/actions.json", payload)
@@ -131,7 +132,6 @@ class Carrot
 
   def post_signed_request(endpoint, payload, uuid = @uuid)
     payload.update({
-      'api_key' => @uuid,
       'game_id' => @app_id,
       'request_date' => Time.now.to_i,
       'request_id' => Digest::SHA1.hexdigest(Time.now.to_s)[8..16]
