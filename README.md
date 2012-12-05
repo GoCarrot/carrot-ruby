@@ -4,20 +4,20 @@
 
 Carrot
 ============
-The Carrot gem allows you to interact with the service provided by [Carrot Inc](http://gocarrot.com).
+The GoCarrot gem allows you to interact with the service provided by [Carrot Inc](http://gocarrot.com).
 
 # Installing
 To install Carrot use the following command:
 
-	gem install carrot
+	gem install gocarrot
 
 (Add `sudo` if you're installing under a POSIX system as root)
 
 Or include it in a `Gemfile`:
 
-	gem 'carrot'
+	gem 'gocarrot'
 	# or
-	gem 'carrot', github: 'GoCarrot/carrot-ruby'
+	gem 'gocarrot', github: 'GoCarrot/carrot-ruby'
 
 # Usage
 Carrot works by sending [Open Graph](https://developers.facebook.com/docs/concepts/opengraph/) actions from the Carrot service at the request of your application in response to user actions. A user must authorize your application on Facebook and allow the 'publish_actions' permission.
