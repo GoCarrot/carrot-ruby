@@ -21,6 +21,12 @@ require 'cgi'
 class Carrot
   attr_accessor :app_id, :app_secret, :uuid, :hostname
 
+  # Create a new Carrot instance.
+  #
+  # @param app_id [String]     Facebook Application Id for your application.
+  # @param app_secret [String] Carrot Application Secret for your application.
+  # @param udid [String]       a per-user unique identifier. We suggest using email address or the Facebook 'third_party_id'. You may also specify `nil` and instead provide a value as you call methods.
+  # @param hostname [String]   the hostname to use for Carrot API endpoints.
   def initialize(app_id, app_secret, uuid = nil, hostname = 'gocarrot.com')
     @app_id = app_id
     @app_secret = app_secret
@@ -28,6 +34,11 @@ class Carrot
     @hostname = hostname
   end
 
+  # Validate the active, or specified user.
+  #
+  # @param udid [String] a per-user unique identifier or `nil` for the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
+  #
+  # @return [Symbol] returns one of: `:authorized`, `:read_only`, `:not_created`, or `:unknown`
   def validate_user(uuid = @uuid)
     @uuid = uuid
     http = Net::HTTP.new @hostname, 443
@@ -47,6 +58,12 @@ class Carrot
     return :unknown
   end
 
+  # Add a user to the Carrot service.
+  #
+  # @param access_token [String] the Facebook user access token for the user to add.
+  # @param udid [String]         a per-user unique identifier or `nil` to use the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
+  #
+  # @return [Symbol] one of: `:authorized`, `:read_only`, `:not_authorized` or `:unknown`
   def create_user(access_token, uuid = @uuid)
     http = Net::HTTP.new @hostname, 443
     http.use_ssl = true
@@ -66,6 +83,51 @@ class Carrot
     end
     return :unknown
   end
+
+  # Post an achievement to the Carrot service.
+  #
+  # @param achievement_id [String] the achievement identifier.
+  # @param udid [String, nil]      a per-user unique identifier or `nil` to use the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
+  #
+  # @return [Symbol] one of: `:success`, `:read_only`, `:not_found`, `:not_authorized` or `:unknown`
+  def post_achievement(achievement_id, uuid = @uuid)
+    return post_signed_request("/me/achievements.json", {'achievement_id' => achievement_id})
+  end
+
+  # Post a high score to the Carrot service.
+  #
+  # @param score [String, Integer] the high score value to post.
+  # @param leaderboard_id [String] the leaderboard identifier to which the score should be posted.
+  # @param udid [String]           a per-user unique identifier or `nil` to use the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
+  #
+  # @return [Symbol] one of: `:success`, `:read_only`, `:not_found`, `:not_authorized` or `:unknown`
+  def post_highscore(score, leaderboard_id = "", uuid = @uuid)
+    return post_signed_request("/me/scores.json", {'value' => score, 'leaderboard_id' => leaderboard_id})
+  end
+
+  # Post an Open Graph action to the Carrot service.
+  #
+  # If creating an object, you are required to include 'title', 'description', 'image_url' and
+  # 'object_type' in `object_properties`.
+  #
+  # @param action_id [String]          Carrot action id.
+  # @param object_instance_id [String] the object instance id of the Carrot object type to create or post; use `nil` if you are creating a throw-away object.
+  # @param action_properties [Hash]    the properties to be sent along with the Carrot action, or `nil`.
+  # @param object_properties [Hash]    the properties for the new object, if creating an object, or `nil`.
+  # @param udid [String] a per-user unique identifier or `nil` to use the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
+  #
+  # @return [Symbol] one of: `:success`, `:read_only`, `:not_found`, `:not_authorized` or `:unknown`
+  def post_action(action_id, object_instance_id, action_properties = {}, object_properties = {}, uuid = @uuid)
+    payload = {
+       'action_id' => action_id,
+       'action_properties' => JSON.generate(action_properties || {}),
+       'object_properties' => JSON.generate(object_properties || {})
+    }
+    payload.update({'object_instance_id' => object_instance_id}) if object_instance_id
+    return post_signed_request("/me/actions.json", payload)
+  end
+
+  private
 
   def post_signed_request(endpoint, payload, uuid = @uuid)
     payload.update({
@@ -87,9 +149,9 @@ class Carrot
     request.set_form_data(payload)
     response = http.request(request)
     case response
-    when Net::HTTPSuccess           # User created
-      return :authorized
-    when Net::HTTPUnauthorized      # Read-only permissions
+    when Net::HTTPSuccess           # Success
+      return :success
+    when Net::HTTPUnauthorized      # User has read-only permissions
       return :read_only
     when Net::HTTPNotFound          # Resource not found
       return :not_found
@@ -99,23 +161,5 @@ class Carrot
       puts response.body
     end
     return :unknown
-  end
-
-  def post_achievement(achievement_id, uuid = @uuid)
-    return post_signed_request("/me/achievements.json", {'achievement_id' => achievement_id})
-  end
-
-  def post_highscore(score, leaderboard_id = "", uuid = @uuid)
-    return post_signed_request("/me/scores.json", {'value' => score, 'leaderboard_id' => leaderboard_id})
-  end
-
-  def post_action(action_id, object_instance_id, action_properties = {}, object_properties = {})
-    payload = {
-       'action_id' => action_id,
-       'action_properties' => JSON.generate(action_properties || {}),
-       'object_properties' => JSON.generate(object_properties || {})
-    }
-    payload.update({'object_instance_id' => object_instance_id}) if object_instance_id
-    return post_signed_request("/me/actions.json", payload)
   end
 end
