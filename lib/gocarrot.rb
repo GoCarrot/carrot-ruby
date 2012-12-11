@@ -25,7 +25,7 @@ class Carrot
   #
   # @param app_id [String]     Facebook Application Id for your application.
   # @param app_secret [String] Carrot Application Secret for your application.
-  # @param udid [String]       a per-user unique identifier. We suggest using email address or the Facebook 'third_party_id'. You may also specify `nil` and instead provide a value as you call methods.
+  # @param uuid [String]       a per-user unique identifier. We suggest using email address or the Facebook 'third_party_id'. You may also specify `nil` and instead provide a value as you call methods.
   # @param hostname [String]   the hostname to use for Carrot API endpoints.
   def initialize(app_id, app_secret, uuid = nil, hostname = 'gocarrot.com')
     @app_id = app_id
@@ -36,7 +36,7 @@ class Carrot
 
   # Validate the active, or specified user.
   #
-  # @param udid [String] a per-user unique identifier or `nil` for the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
+  # @param uuid [String] a per-user unique identifier or `nil` for the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
   #
   # @return [Symbol] returns one of: `:authorized`, `:read_only`, `:not_created`, or `:unknown`
   def validate_user(uuid = @uuid)
@@ -61,7 +61,7 @@ class Carrot
   # Add a user to the Carrot service.
   #
   # @param access_token [String] the Facebook user access token for the user to add.
-  # @param udid [String]         a per-user unique identifier or `nil` to use the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
+  # @param uuid [String]         a per-user unique identifier or `nil` to use the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
   #
   # @return [Symbol] one of: `:authorized`, `:read_only`, `:not_authorized` or `:unknown`
   def create_user(access_token, uuid = @uuid)
@@ -87,7 +87,7 @@ class Carrot
   # Post an achievement to the Carrot service.
   #
   # @param achievement_id [String] the achievement identifier.
-  # @param udid [String, nil]      a per-user unique identifier or `nil` to use the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
+  # @param uuid [String, nil]      a per-user unique identifier or `nil` to use the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
   #
   # @return [Symbol] one of: `:success`, `:read_only`, `:not_found`, `:not_authorized` or `:unknown`
   def post_achievement(achievement_id, uuid = @uuid)
@@ -98,7 +98,7 @@ class Carrot
   #
   # @param score [String, Integer] the high score value to post.
   # @param leaderboard_id [String] the leaderboard identifier to which the score should be posted.
-  # @param udid [String]           a per-user unique identifier or `nil` to use the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
+  # @param uuid [String]           a per-user unique identifier or `nil` to use the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
   #
   # @return [Symbol] one of: `:success`, `:read_only`, `:not_found`, `:not_authorized` or `:unknown`
   def post_highscore(score, leaderboard_id = "", uuid = @uuid)
@@ -114,7 +114,7 @@ class Carrot
   # @param object_instance_id [String] the object instance id of the Carrot object type to create or post; use `nil` if you are creating a throw-away object.
   # @param action_properties [Hash]    the properties to be sent along with the Carrot action, or `nil`.
   # @param object_properties [Hash]    the properties for the new object, if creating an object, or `nil`.
-  # @param udid [String] a per-user unique identifier or `nil` to use the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
+  # @param uuid [String] a per-user unique identifier or `nil` to use the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
   #
   # @return [Symbol] one of: `:success`, `:read_only`, `:not_found`, `:not_authorized` or `:unknown`
   def post_action(action_id, object_instance_id, action_properties = {}, object_properties = {}, uuid = @uuid)
@@ -132,7 +132,7 @@ class Carrot
   #
   # @param object_type [Symbol] one of: `:game`, `:publisher`, `:achievement`, or `:object`.
   # @param object_id [String]   if `:achievement` or `:object` is specified as `object_type` this is the identifier of the achievement or object.
-  # @param udid [String] a per-user unique identifier or `nil` to use the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
+  # @param uuid [String] a per-user unique identifier or `nil` to use the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
   #
   # @return [Symbol] one of: `:success`, `:read_only`, `:not_found`, `:not_authorized` or `:unknown`
   def post_like(object_type, object_id = nil, uuid = @uuid)
