@@ -34,33 +34,9 @@ class Carrot
     @hostname = hostname
   end
 
-  # Validate the active, or specified user.
+  # Validate a user with the Carrot service.
   #
-  # @param uuid [String] a per-user unique identifier or `nil` for the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
-  #
-  # @return [Symbol] returns one of: `:authorized`, `:read_only`, `:not_created`, or `:unknown`
-  def validate_user(uuid = @uuid)
-    @uuid = uuid
-    http = Net::HTTP.new @hostname, 443
-    http.use_ssl = true
-    request = Net::HTTP::Get.new "/games/#{@app_id}/users.json?id=#{CGI::escape(uuid.to_s)}"
-    response = http.request(request)
-    case response
-    when Net::HTTPSuccess       # User has fully-authorized app
-      return :authorized
-    when Net::HTTPUnauthorized  # Read-only permissions
-      return :read_only
-    when Net::HTTPClientError   # User has not been created
-      return :not_created
-    else
-      puts response.body
-    end
-    return :unknown
-  end
-
-  # Add a user to the Carrot service.
-  #
-  # @param access_token [String] the Facebook user access token for the user to add.
+  # @param access_token [String] the Facebook user access token for the user.
   # @param uuid [String]         a per-user unique identifier or `nil` to use the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
   #
   # @return [Symbol] one of: `:authorized`, `:read_only`, `:not_authorized` or `:unknown`
