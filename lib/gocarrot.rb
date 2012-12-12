@@ -40,7 +40,7 @@ class Carrot
   # @param uuid [String]         a per-user unique identifier or `nil` to use the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
   #
   # @return [Symbol] one of: `:authorized`, `:read_only`, `:not_authorized` or `:unknown`
-  def create_user(access_token, uuid = @uuid)
+  def validate_user(access_token, uuid = @uuid)
     http = Net::HTTP.new @hostname, 443
     http.use_ssl = true
 
