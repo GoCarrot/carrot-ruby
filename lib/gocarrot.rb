@@ -73,12 +73,11 @@ class Carrot
   # Post a high score to the Carrot service.
   #
   # @param score [String, Integer] the high score value to post.
-  # @param leaderboard_id [String] the leaderboard identifier to which the score should be posted.
   # @param uuid [String]           a per-user unique identifier or `nil` to use the value of {Carrot#uuid}. We suggest using email address or the Facebook 'third_party_id'.
   #
   # @return [Symbol] one of: `:success`, `:read_only`, `:not_found`, `:not_authorized` or `:unknown`
-  def post_highscore(score, leaderboard_id = "", uuid = @uuid)
-    return post_signed_request("/me/scores.json", {'api_key' => uuid, 'value' => score, 'leaderboard_id' => leaderboard_id})
+  def post_highscore(score, uuid = @uuid)
+    return post_signed_request("/me/scores.json", {'api_key' => uuid, 'value' => score})
   end
 
   # Post an Open Graph action to the Carrot service.
