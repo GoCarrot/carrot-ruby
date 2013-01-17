@@ -36,10 +36,10 @@ This is an example of creating a new Carrot instance:
 Once your Carrot instance has been created, validate the user with carrot by calling {Carrot#validate_user}. This will return one of several values: `:authorized`, `:read_only`, or `:unknown`
 
 * If the return value is `:authorized` then the Carrot service is ready to recieve actions on behalf of this user.
-* If the return value is `:read_only` then the user has not authorized the 'publish_actions' permission for your app on Facebook and you should call {Carrot#create_user} once the user has allowed the 'publish_actions' permission.
+* If the return value is `:read_only` then the user has not authorized the 'publish_actions' permission for your app on Facebook and you should call {Carrot#validate_user} once the user has allowed the 'publish_actions' permission.
 * If the return value is `:unknown` then something unexpected has gone wrong and the server cannot determine the status for the user.
 
-	carrot.create_user(params[:oauth_token])
+	carrot.validate_user(params[:oauth_token])
 
 ## Making Requests
 
