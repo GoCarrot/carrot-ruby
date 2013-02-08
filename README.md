@@ -4,7 +4,7 @@
 
 Carrot
 ============
-The GoCarrot gem allows you to interact with the service provided by [Carrot Inc](http://gocarrot.com).
+The GoCarrot gem allows you to interact with the service provided by [Carrot](http://gocarrot.com).
 
 # Installing
 To install Carrot use the following command:
